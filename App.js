@@ -8,14 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import HomeScreen from "./Screens/Home";
-
+import { Navigation } from "./Screens/Navigation";
 
 export default function App() {
-  
-  return (
-    <View>
-      <HomeScreen />
-      <StatusBar barStyle='light-content' />
-    </View>
-  );
+  return <Navigation />;
 }

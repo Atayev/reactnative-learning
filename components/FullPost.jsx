@@ -1,7 +1,8 @@
-import { View } from 'react-native'
+import { View } from "react-native";
 import styled from "styled-components/native";
 
-
+import { useEffect, useState } from "react";
+import { Loading } from "./Loading";
 
 const PostView = styled.View`
   flex-direction: row;
@@ -20,13 +21,37 @@ const PostTitle = styled.Text`
   font-weight: 800;
 `;
 
-function FullPost() {
+function FullPost({route , navigation}) {
+  const [isLoading, setIsLoading] = useState(false);
+    const [item, setItem] = useState();
+    
+    const {id,title} = route.params
+  const fetchData = async () => {
+    setIsLoading(true);
+    const res = await fetch("https://jsonplaceholder.typicode.com/photos/"+id);
+    const data = await res.json();
+
+    setItem(data);
+    setIsLoading(false);
+  };
+    useEffect(() => {
+        navigation.setOptions({
+        title
+    })
+    fetchData();
+  }, []);
+
+  useEffect(fetchData, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
-      <View style={{padding:20}}>
-          <PostImage source={{ uri: "https://via.placeholder.com/600/1ee8a4" }} />
-          <PostTitle>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil nulla assumenda quos doloribus reiciendis, corrupti perspiciatis saepe necessitatibus nam dignissimos pariatur aliquam facere nostrum sed in dolorem amet excepturi soluta.</PostTitle>
+    <View style={{ padding: 20 }}>
+      <PostImage source={{ uri: item?.url }} />
+      <PostTitle>{item?.title}</PostTitle>
     </View>
-  )
+  );
 }
 
-export default FullPost
+export default FullPost;

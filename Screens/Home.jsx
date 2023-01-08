@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StatusBar,
   Text,
@@ -8,11 +8,12 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
+import { Loading } from "../components/Loading";
 import { Post } from "../components/Post";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const fetchData = async () => {
     setIsLoading(true);
     const res = await fetch("https://jsonplaceholder.typicode.com/photos");
@@ -26,9 +27,12 @@ export default function HomeScreen() {
     fetchData();
   }, []);
 
-  
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <View>
+      <StatusBar theme="auto" />
 
       <FlatList
         data={data}
@@ -36,7 +40,7 @@ export default function HomeScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={fetchData} />
         }
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("fullpost",{id:item?.id, title:item?.title})}>
             <Post
               title={item.title}
               imageUrl={item.url}
